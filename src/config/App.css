@@ -1,0 +1,223 @@
+@import url('../config/font.css');
+@import url('../config/variables.css');
+
+body {
+    background-color: rgb(55, 55, 55);
+}
+
+label {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16.94px;
+    text-align: left;
+}
+
+.taskBoard {
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+    height: 570px;
+    border: 1px solid black;
+    background-color: var(--white);
+    margin: auto;
+}
+.tasksContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.taskContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    width: 304px;
+    height: 60px;
+    margin: 0 0 15px 0;
+    border-radius: 10px;
+    background-color: var(--primary);
+    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+}
+.textContainer {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    max-width: 205px;
+    text-overflow: ellipsis;
+}
+
+.taskName {
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 29.05px;
+    margin: 5px 0 0 15px;
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.taskDescription {
+    font-size: 16px;
+    font-weight: normal;
+    margin: 0 0 3px 15px;
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.editButton {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.deleteButton {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.editButton:hover {
+    cursor: pointer;
+}
+
+.deleteButton:hover {
+    cursor: pointer;
+}
+
+.createButtonContainer {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 0 30px 0;
+}
+
+.createButton {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 15px;
+    margin-right: 5px;
+    padding-right: 20px;
+    background-color: var(--blue);
+    border-radius: 10px;
+    border-style: none;
+    width: 97px;
+    height: 40px;
+    color: var(--white);
+    font-family: Inter;
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 19.36px;
+}
+
+.createButton:hover {
+    cursor: pointer;
+    background-color: lightskyblue;
+}
+
+.plusButton {
+    width: 24px;
+    height: 24px;
+    margin-right: 5px;
+}
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+}
+
+.modalContent {
+    margin-top: 150px;
+    width: 260px;
+    height: 207px;
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8 px rgba(0, 0, 0, 0.2);
+}
+
+.modalHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.modalButtons {
+    display: flex;
+    flex-direction: row;
+    margin: 10px 0 0 0;
+}
+
+.modalHeaderName {
+    display: flex;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 24.2px;
+}
+
+.modalCloseButton {
+    display: flex;
+    align-items: end;
+    margin: 0;
+    width: 24px;
+}
+
+.modalCloseButton:hover {
+    cursor: pointer;
+}
+
+.modalInput {
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    width: 250px;
+    height: 39px;
+    margin-bottom: 5px;
+}
+
+.modalCreateButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--blue);
+    border-radius: 8px;
+    width: 83px;
+    height: 35px;
+    color: var(--white);
+    border: none;
+    margin-right: 5px;
+}
+
+.modalCreateButton:hover {
+    cursor: pointer;
+    background-color: lightskyblue;
+}
+
+.modalCancelButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--noactive);
+    border-radius: 8px;
+    width: 83px;
+    height: 35px;
+    color: var(--white);
+    cursor: pointer;
+    border: none;
+}
