@@ -1,31 +1,53 @@
 @import url('../config/font.css');
 @import url('../config/variables.css');
 
-body {
-    background-color: rgb(55, 55, 55);
+::-webkit-input-placeholder {
+    /* WebKit browsers */
+    color: var(--light-grey);
+}
+:-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    color: var(--light-grey);
+}
+::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    color: var(--light-grey);
+}
+:-ms-input-placeholder {
+    /* Internet Explorer 10+ */
+    color: var(--light-grey);
+}
+
+p {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19.5px;
+    text-align: left;
 }
 
 label {
-    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
     font-weight: 400;
-    line-height: 16.94px;
+    line-height: 14.63px;
     text-align: left;
 }
 
 .taskBoard {
     display: flex;
     flex-direction: column;
-    width: 320px;
-    height: 570px;
-    border: 1px solid black;
-    background-color: var(--white);
-    margin: auto;
+    width: auto;
+    height: auto;
 }
 .tasksContainer {
+    top: 20px;
+    left: 20px;
+    border-radius: 16px 0px 0px 0px;
+    opacity: 0px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin: 0 auto;
 }
 
 .taskContainer {
@@ -33,26 +55,38 @@ label {
     justify-content: space-between;
     align-items: center;
     flex-direction: row;
-    width: 304px;
-    height: 60px;
+    padding: 8px 16px 8px 16px;
+    width: auto;
+    height: 74px;
     margin: 0 0 15px 0;
     border-radius: 10px;
-    background-color: var(--primary);
+    background-color: var(--light);
     box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
 }
+
+.taskContainer:hover {
+    cursor: pointer;
+}
+
 .textContainer {
     display: flex;
     flex-direction: column;
     margin: 0;
-    max-width: 205px;
-    text-overflow: ellipsis;
+    max-width: 280px;
+}
+
+@media screen and (max-width: 395px){
+    .textContainer {
+        max-width: 205px;
+    }
 }
 
 .taskName {
     font-size: 24px;
-    font-weight: bold;
-    line-height: 29.05px;
-    margin: 5px 0 0 15px;
+    font-weight: 400;
+    line-height: 29.26px;
+    text-align: left;
+    margin: 0 0 10px 0;
     text-wrap: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -60,37 +94,44 @@ label {
 
 .taskDescription {
     font-size: 16px;
-    font-weight: normal;
-    margin: 0 0 3px 15px;
+    font-weight: 400;
+    line-height: 19.5px;
+    text-align: left;
+    margin: 0;
     text-wrap: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .controls {
-    display: flex;
-    align-items: center;
-    margin: 0;
+    display: grid;
+    place-items: center;
+    gap: 8px;
+    grid-template-columns: 36px 36px;
+    height: 36px;
+    z-index: 5;
 }
 
 .editButton {
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
+    display: grid;
+    width: 20px;
+    height: 20px;
 }
 
 .deleteButton {
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
+    display: grid;
+    width: 20px;
+    height: 20px;
 }
 
 .editButton:hover {
     cursor: pointer;
+    filter: invert(55%) sepia(83%) saturate(1017%) hue-rotate(13deg) brightness(109%) contrast(94%);
 }
 
 .deleteButton:hover {
     cursor: pointer;
+    filter: invert(31%) sepia(24%) saturate(5892%) hue-rotate(333deg) brightness(83%) contrast(94%);
 }
 
 .createButtonContainer {
@@ -106,13 +147,12 @@ label {
     margin-top: 15px;
     margin-right: 5px;
     padding-right: 20px;
-    background-color: var(--blue);
+    background-color: var(--primary);
     border-radius: 10px;
     border-style: none;
     width: 97px;
     height: 40px;
-    color: var(--white);
-    font-family: Inter;
+    color: var(--light);
     font-size: 16px;
     font-weight: normal;
     line-height: 19.36px;
@@ -120,7 +160,7 @@ label {
 
 .createButton:hover {
     cursor: pointer;
-    background-color: lightskyblue;
+    background-color: var(--info);
 }
 
 .plusButton {
@@ -138,15 +178,25 @@ label {
     background: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 .modalContent {
-    margin-top: 150px;
     width: 260px;
-    height: 207px;
+    max-height: 242px;
     background: white;
     padding: 20px;
-    border-radius: 5px;
+    border-radius: 16px;
+    box-shadow: 0 4px 8 px rgba(0, 0, 0, 0.2);
+}
+
+.modalRemoveContent {
+    margin-top: 150px;
+    width: 260px;
+    height: 150px;
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
     box-shadow: 0 4px 8 px rgba(0, 0, 0, 0.2);
 }
 
@@ -154,28 +204,31 @@ label {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin-bottom: 10px;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 .modalButtons {
     display: flex;
     flex-direction: row;
-    margin: 10px 0 0 0;
+    margin: 20px 0 0 0;
 }
 
 .modalHeaderName {
     display: flex;
     margin: 0;
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 24.2px;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 34.13px;
+    text-align: left;
 }
 
 .modalCloseButton {
     display: flex;
     align-items: end;
-    margin: 0;
-    width: 24px;
+    padding: 8px; 
+    width: 20px;
+    height: 20px;
 }
 
 .modalCloseButton:hover {
@@ -185,39 +238,102 @@ label {
 .modalInput {
     display: flex;
     flex-direction: column;
+    border-color: var(--light-grey);
     border-radius: 8px;
     width: 250px;
     height: 39px;
     margin-bottom: 5px;
+    padding-left: 10px;
+}
+
+.modalRemoveModeText{
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19.5px;
+    text-align: left;  
 }
 
 .modalCreateButton {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--blue);
+    background-color: var(--success);
     border-radius: 8px;
     width: 83px;
-    height: 35px;
-    color: var(--white);
+    height: 36px;
+    color: var(--light);
     border: none;
     margin-right: 5px;
 }
 
 .modalCreateButton:hover {
     cursor: pointer;
-    background-color: lightskyblue;
+    background-color: lightseagreen;
 }
 
 .modalCancelButton {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--noactive);
+    background-color: var(--secondary);
     border-radius: 8px;
     width: 83px;
-    height: 35px;
-    color: var(--white);
+    height: 36px;
+    color: var(--light);
     cursor: pointer;
     border: none;
+}
+
+.modalEditButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--warning);
+    border-radius: 8px;
+    width: 83px;
+    height: 36px;
+    color: var(--gray-dark);
+    border: none;
+    margin-right: 5px;
+}
+
+.modalEditButton:hover {
+    cursor: pointer;
+    background-color: rgb(225, 211, 19);
+}
+
+.modalEditfromViewButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--info);
+    border-radius: 8px;
+    width: 83px;
+    height: 36px;
+    color: var(--gray-dark);
+    border: none;
+    margin-right: 5px;
+}
+
+.modalEditfromViewButton:hover {
+    cursor: pointer;
+    background-color: rgb(170, 234, 236);
+}
+
+.modalRemoveButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--danger);
+    border-radius: 8px;
+    width: 96px;
+    height: 36px;
+    color: var(--light);
+    border: none;
+    margin-right: 5px;
+}
+
+.modalRemoveButton:hover {
+    cursor: pointer;
+    background-color: rgb(217, 111, 111);
 }

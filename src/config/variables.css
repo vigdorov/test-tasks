@@ -1,7 +1,15 @@
 :root {
-    --primary: rgb(211, 211, 211);
-    --blue: #0050A5;
-    --black: #000000;
-    --white: #ffff;
-    --noactive: #939393;
+    --primary: #0F5BCC;
+    --secondary: #6C757D;
+    --success: #198754;
+    --info: #0DBDE0;
+    --warning: #E7AF07;
+    --danger: #CF3140;
+
+    --white: #FFFFFF;
+    --light-grey: #B3BDC7;
+    --grey: #6C757D;
+    --dark-grey: #343A40;
+    --dark: #212529;
+    --light: #EBEBEB;
 }
