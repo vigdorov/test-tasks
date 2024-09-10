@@ -1,14 +1,25 @@
 import React, {useState, useEffect} from 'react';
+import {
+    useNavigate,
+    createRoutesFromElements,
+    createBrowserRouter,
+    RouterProvider,
+    Route,
+    Router,
+} from "react-router-dom";
+import './config/App.css';
 import {Task} from './Task';
 import {Modal} from './Modal';
 
 const plus = require('../src/image/plus.svg');
 
 export const TaskBoard = () => {
+    const navigate = useNavigate();
+    
     const [tasks, setTasks] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [currentTaskId, setCurrentTaskId] = useState(null);
-    const [modalMode, setModalMode] = useState('create'); // 'create', 'edit', 'view', 'remove'
+    const [modalMode, setModalMode] = useState('create' || null); // 'create', 'edit', 'view', 'remove'
+    const [currentTaskId, setCurrentTaskId] = useState('' || null);
 
     // Загрузка задач из localStorage при монтировании компонента
     useEffect(() => {
@@ -68,15 +79,26 @@ export const TaskBoard = () => {
     const closeModal = () => {
         setIsModalOpen(false);
         setCurrentTaskId(null);
-        setModalMode('create');
+        setModalMode(null);
+        window.history.pushState(null, '', '/');
     };
+
+    const handleNavigate = (event) => {
+        navigate(event.target.name);
+    }
 
     return (
         <div className="taskBoard">
             <div className="createButtonContainer">
-                <button className="createButton" onClick={openCreateModal}>
+                <button name="create" className="btn createButton" onClick={openCreateModal}>
                     <img className="plusButton" src={plus} />
-                    Create</button>
+                    Create
+                </button>
+            </div>
+            <div className="titlesContainer">
+                <div className="titlesNames">Title</div>
+                <div className="titlesNames">Description</div>
+                <div className="titlesNames">Date</div>
             </div>
             <div className="tasksContainer">
                 {tasks.map((task) => (
@@ -85,23 +107,20 @@ export const TaskBoard = () => {
                         task={task}
                         onEdit={() => openEditModal(task)}
                         onView={() => openViewModal(task)}
-                        onDelete={() => openRemoveModal(task)} // Открываем модальное окно удаления
-                        isHighlighted={isModalOpen && currentTaskId === task.id} 
+                        onDelete={() => openRemoveModal(task)}
+                        currentTaskId={currentTaskId}
                     />
                 ))}
             </div>
             <Modal
                 isOpen={isModalOpen}
                 onClose={closeModal}
-                onSubmit={
-                    modalMode === 'create' ? handleCreateTask :
-                        modalMode === 'edit' ? handleEditTask :
-                            modalMode === 'view' ? handleEditTask :
-                                handleDeleteTask
-                }
-                onViewEdit={openEditModal}
                 task={tasks.find(t => t.id === currentTaskId)}
                 mode={modalMode}
+                onCreate={handleCreateTask}
+                onSave={handleEditTask}
+                onEdit={openEditModal}
+                onRemove={handleDeleteTask}
             />
         </div>
     );

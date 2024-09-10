@@ -1,5 +1,7 @@
 @import url('../config/font.css');
 @import url('../config/variables.css');
+@import url('../config/Modal.css');
+@import url('../config/Buttons.css');
 
 ::-webkit-input-placeholder {
     /* WebKit browsers */
@@ -18,11 +20,27 @@
     color: var(--light-grey);
 }
 
-p {
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 19.5px;
-    text-align: left;
+@media screen and (max-width: 1200px) {
+    .titlesContainer {
+        display: none;
+    }
+    .titlesNames {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .titlesContainer {
+        display: grid;
+        place-items: left;
+        grid-template-columns: 30% 45% 25%;
+        height: 30px;
+    }
+
+    .titlesNames {
+        display: grid;
+        padding-left: 30px;
+    }
 }
 
 label {
@@ -32,6 +50,7 @@ label {
     font-weight: 400;
     line-height: 14.63px;
     text-align: left;
+    margin-top: 8px;
 }
 
 .taskBoard {
@@ -52,9 +71,8 @@ label {
 
 .taskContainer {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: center;
-    flex-direction: row;
     padding: 8px 16px 8px 16px;
     width: auto;
     height: 74px;
@@ -66,19 +84,45 @@ label {
 
 .taskContainer:hover {
     cursor: pointer;
+    background-color: var(--light-gray);
+}
+
+.taskContent {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+.taskContent__mainContent {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+}
+
+.taskContent__dateContent {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.taskDate {
+    display: flex;
+    justify-content: flex-end;
+    color: var(--gray);
+    margin: 0;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 14.63px;
+    text-align: left;
 }
 
 .textContainer {
     display: flex;
     flex-direction: column;
     margin: 0;
-    max-width: 280px;
-}
-
-@media screen and (max-width: 395px){
-    .textContainer {
-        max-width: 205px;
-    }
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .taskName {
@@ -103,237 +147,11 @@ label {
     text-overflow: ellipsis;
 }
 
-.controls {
-    display: grid;
-    place-items: center;
-    gap: 8px;
-    grid-template-columns: 36px 36px;
-    height: 36px;
-    z-index: 5;
-}
-
-.editButton {
-    display: grid;
-    width: 20px;
-    height: 20px;
-}
-
-.deleteButton {
-    display: grid;
-    width: 20px;
-    height: 20px;
-}
-
-.editButton:hover {
-    cursor: pointer;
-    filter: invert(55%) sepia(83%) saturate(1017%) hue-rotate(13deg) brightness(109%) contrast(94%);
-}
-
-.deleteButton:hover {
-    cursor: pointer;
-    filter: invert(31%) sepia(24%) saturate(5892%) hue-rotate(333deg) brightness(83%) contrast(94%);
-}
-
-.createButtonContainer {
+.inputContainer {
     display: flex;
-    justify-content: flex-end;
-    margin: 0 0 30px 0;
-}
-
-.createButton {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin-top: 15px;
-    margin-right: 5px;
-    padding-right: 20px;
-    background-color: var(--primary);
-    border-radius: 10px;
-    border-style: none;
-    width: 97px;
-    height: 40px;
-    color: var(--light);
-    font-size: 16px;
-    font-weight: normal;
-    line-height: 19.36px;
-}
-
-.createButton:hover {
-    cursor: pointer;
-    background-color: var(--info);
-}
-
-.plusButton {
-    width: 24px;
-    height: 24px;
-    margin-right: 5px;
-}
-
-.modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modalContent {
-    width: 260px;
-    max-height: 242px;
-    background: white;
-    padding: 20px;
-    border-radius: 16px;
-    box-shadow: 0 4px 8 px rgba(0, 0, 0, 0.2);
-}
-
-.modalRemoveContent {
-    margin-top: 150px;
-    width: 260px;
-    height: 150px;
-    background: white;
-    padding: 20px;
-    border-radius: 16px;
-    box-shadow: 0 4px 8 px rgba(0, 0, 0, 0.2);
-}
-
-.modalHeader {
-    display: flex;
+    text-wrap: wrap;
     flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.modalButtons {
-    display: flex;
-    flex-direction: row;
-    margin: 20px 0 0 0;
-}
-
-.modalHeaderName {
-    display: flex;
     margin: 0;
-    font-size: 28px;
-    font-weight: 400;
-    line-height: 34.13px;
-    text-align: left;
-}
-
-.modalCloseButton {
-    display: flex;
-    align-items: end;
-    padding: 8px; 
-    width: 20px;
-    height: 20px;
-}
-
-.modalCloseButton:hover {
-    cursor: pointer;
-}
-
-.modalInput {
-    display: flex;
-    flex-direction: column;
-    border-color: var(--light-grey);
-    border-radius: 8px;
-    width: 250px;
-    height: 39px;
-    margin-bottom: 5px;
-    padding-left: 10px;
-}
-
-.modalRemoveModeText{
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 19.5px;
-    text-align: left;  
-}
-
-.modalCreateButton {
-    display: flex;
-    justify-content: center;
     align-items: center;
-    background-color: var(--success);
     border-radius: 8px;
-    width: 83px;
-    height: 36px;
-    color: var(--light);
-    border: none;
-    margin-right: 5px;
-}
-
-.modalCreateButton:hover {
-    cursor: pointer;
-    background-color: lightseagreen;
-}
-
-.modalCancelButton {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--secondary);
-    border-radius: 8px;
-    width: 83px;
-    height: 36px;
-    color: var(--light);
-    cursor: pointer;
-    border: none;
-}
-
-.modalEditButton {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--warning);
-    border-radius: 8px;
-    width: 83px;
-    height: 36px;
-    color: var(--gray-dark);
-    border: none;
-    margin-right: 5px;
-}
-
-.modalEditButton:hover {
-    cursor: pointer;
-    background-color: rgb(225, 211, 19);
-}
-
-.modalEditfromViewButton {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--info);
-    border-radius: 8px;
-    width: 83px;
-    height: 36px;
-    color: var(--gray-dark);
-    border: none;
-    margin-right: 5px;
-}
-
-.modalEditfromViewButton:hover {
-    cursor: pointer;
-    background-color: rgb(170, 234, 236);
-}
-
-.modalRemoveButton {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--danger);
-    border-radius: 8px;
-    width: 96px;
-    height: 36px;
-    color: var(--light);
-    border: none;
-    margin-right: 5px;
-}
-
-.modalRemoveButton:hover {
-    cursor: pointer;
-    background-color: rgb(217, 111, 111);
 }
