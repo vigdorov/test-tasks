@@ -1,99 +1,114 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {
+    Link,
+    useParams,
     useNavigate,
-    createRoutesFromElements,
-    createBrowserRouter,
-    RouterProvider,
-    Route,
-    Router,
 } from "react-router-dom";
+
 import './config/App.css';
+
 import {Task} from './Task';
 import {Modal} from './Modal';
+
+import {useGlobalStore} from './GlobalStoreContext';
+import {useSetGlobalStore} from './GlobalStoreContext';
 
 const plus = require('../src/image/plus.svg');
 
 export const TaskBoard = () => {
+    const setGlobalStore = useSetGlobalStore();
+
+    const state = useGlobalStore();
+    const {tasks, currentTaskId} = state;
+
+    const {mode} = useParams();
     const navigate = useNavigate();
-    
-    const [tasks, setTasks] = useState([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalMode, setModalMode] = useState('create' || null); // 'create', 'edit', 'view', 'remove'
-    const [currentTaskId, setCurrentTaskId] = useState('' || null);
 
-    // Загрузка задач из localStorage при монтировании компонента
-    useEffect(() => {
-        const storedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-        setTasks(storedTasks);
-    }, []);
-
-    // Сохранение задач в localStorage при изменении состояния
-    useEffect(() => {
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-    }, [tasks]);
+    const closeModal = () => {
+        setGlobalStore({
+            currentTaskId: null,
+        });
+        navigate('/')
+    };
 
     const handleCreateTask = (newTask) => {
         const taskWithId = {...newTask, id: Date.now()}; // Генерация уникального ID
-        setTasks([...tasks, taskWithId]);
+        const updatedTasks = [...tasks, taskWithId];
+        setGlobalStore({
+            tasks: updatedTasks,
+        });
+        localStorage.setItem('tasks', JSON.stringify(updatedTasks));
         closeModal();
     };
 
+    const cloneTask = (id) => {
+        const taskToClone = tasks.find(task => task.id === id);
+        if (taskToClone) {
+            const newTask = {
+                ...taskToClone, id: Date.now()
+            };
+            const updatedTasks = [...tasks, newTask];
+            localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+            setGlobalStore({
+                tasks: [...tasks, newTask],
+            });
+        };
+    };
+
     const handleEditTask = (updatedTask) => {
-        const updatedTasks = tasks.map((task) =>
+        const updatedTasks = tasks.map(task =>
             task.id === updatedTask.id ? updatedTask : task
         );
-        setTasks(updatedTasks);
+        localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+        setGlobalStore({
+            tasks: updatedTasks,
+        });
         closeModal();
     };
 
     const handleDeleteTask = (id) => {
-        const updatedTasks = tasks.filter((task) => task.id !== id);
-        setTasks(updatedTasks);
+        const updatedTasks = tasks.filter(task => task.id !== id);
+        setGlobalStore({
+            tasks: updatedTasks,
+        });
+        localStorage.setItem('tasks', JSON.stringify(updatedTasks));
         closeModal();
     };
 
     const openCreateModal = () => {
-        setCurrentTaskId(null);
-        setModalMode('create');
-        setIsModalOpen(true);
+        setGlobalStore({
+            currentTaskId: null,
+        });
+        navigate('/create');
     };
 
     const openEditModal = (task) => {
-        setCurrentTaskId(task.id);
-        setModalMode('edit');
-        setIsModalOpen(true);
+        setGlobalStore({
+            currentTaskId: task.id,
+        });
+        navigate(`/edit/${task.id}`);
     };
 
     const openViewModal = (task) => {
-        setCurrentTaskId(task.id);
-        setModalMode('view');
-        setIsModalOpen(true);
+        setGlobalStore({
+            currentTaskId: task.id,
+        });
     };
 
     const openRemoveModal = (task) => {
-        setCurrentTaskId(task.id);
-        setModalMode('remove');
-        setIsModalOpen(true);
+        setGlobalStore({
+            currentTaskId: task.id,
+        });
+        navigate(`/remove/${task.id}`);
     };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setCurrentTaskId(null);
-        setModalMode(null);
-        window.history.pushState(null, '', '/');
-    };
-
-    const handleNavigate = (event) => {
-        navigate(event.target.name);
-    }
 
     return (
         <div className="taskBoard">
             <div className="createButtonContainer">
-                <button name="create" className="btn createButton" onClick={openCreateModal}>
+                <Link className="btn createButton" to="/create" onClick={openCreateModal}>
                     <img className="plusButton" src={plus} />
                     Create
-                </button>
+                </Link>
             </div>
             <div className="titlesContainer">
                 <div className="titlesNames">Title</div>
@@ -101,26 +116,29 @@ export const TaskBoard = () => {
                 <div className="titlesNames">Date</div>
             </div>
             <div className="tasksContainer">
+                <div className="tasksContainer__scroller">
                 {tasks.map((task) => (
                     <Task
                         key={task.id}
                         task={task}
-                        onEdit={() => openEditModal(task)}
+                        mode={mode}
                         onView={() => openViewModal(task)}
+                        onEdit={() => openEditModal(task)}
+                        onClone={cloneTask}
                         onDelete={() => openRemoveModal(task)}
-                        currentTaskId={currentTaskId}
                     />
                 ))}
+                </div>
             </div>
             <Modal
-                isOpen={isModalOpen}
-                onClose={closeModal}
                 task={tasks.find(t => t.id === currentTaskId)}
-                mode={modalMode}
+                mode={mode}
                 onCreate={handleCreateTask}
                 onSave={handleEditTask}
                 onEdit={openEditModal}
                 onRemove={handleDeleteTask}
+                onClose={closeModal}
+                onClone={cloneTask}
             />
         </div>
     );

@@ -11,6 +11,7 @@ module.exports = {
         filename: '[chunkhash].js',
         path: path.resolve(__dirname, 'build'),
         clean: true,
+        publicPath: '/',
     },
     optimization: {
         splitChunks: {
@@ -25,6 +26,7 @@ module.exports = {
         open: true,
         port: 3000,
         hot: true,
+        historyApiFallback: true,
     },
     resolve: {
         extensions: ['.js', '.jsx'],

@@ -1,18 +1,18 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
+import {
+    Link,
+} from "react-router-dom";
+
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faXmark} from '@fortawesome/free-solid-svg-icons';
 
+import {useGlobalStore} from './GlobalStoreContext';
+import {useSetGlobalStore} from './GlobalStoreContext';
 
-export const Modal = ({isOpen, onClose, onEdit, task, mode, onCreate, onSave, onRemove}) => {
-   
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [date, setDate] = useState(task?.date || '');
-    const [errors, setErrors] = useState({
-        title: '',
-        description: '',
-        date: ''
-    });
+export const Modal = ({onClose, onEdit, task, mode, onCreate, onSave, onRemove, onClone}) => {
+    const {title, description, date, errors, isDirty} = useGlobalStore();
+    const setGlobalStore = useSetGlobalStore();
+
     const modalRef = useRef(null);
 
     const validate = () => {
@@ -26,7 +26,7 @@ export const Modal = ({isOpen, onClose, onEdit, task, mode, onCreate, onSave, on
         } else if (title.length > 50) {
             newErrors.title = 'Maximum of 50 characters';
             isValid = false;
-        }
+        } 
 
         // Валидация description
         if (!description) {
@@ -53,68 +53,109 @@ export const Modal = ({isOpen, onClose, onEdit, task, mode, onCreate, onSave, on
                 isValid = false;
             }
         }
-        if (mode === 'create' && isValid === true) {
-            onCreate({title, description, date});
-        } else if (mode === 'edit' && isValid === true) {
-            onSave({...task, title, description, date});
-        }
 
-        setErrors(newErrors);
+        setGlobalStore({
+            errors: newErrors,
+        })
+
         return isValid;
     };
+
+    useEffect(() => {
+        if (mode === 'create' && isDirty === true) {
+            isValid = true;
+            validate();
+        }
+    }, [title, description, date]);
 
     const handleClickOutside = (event) => {
         if (modalRef.current && !modalRef.current.contains(event.target)) {
             onClose();
-            setTitle('');
-            setDescription('');
-            setDate('');
-            window.history.pushState(null, '', '/');
+            setGlobalStore({
+            title: '',
+            description: '',
+            date: '',
+        })
         };
+    }
+
+    const handleAction = () => {
+        if (mode === 'create' && validate()) {
+            onCreate({title, description, date});
+            setGlobalStore({
+                title: '',
+                description: '',
+                date: '',
+            })
+
+        } else if (mode === 'edit' && validate()) {
+            onSave({...task, title, description, date});
+            onClose();
+            setGlobalStore({
+                title: '',
+                description: '',
+                date: '',
+            })
+        }
     }
 
     const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
             onClose();
-            setTitle('');
-            setDescription('');
-            setDate('');
-            window.history.pushState(null, '', '/');
+            setGlobalStore({
+                title: '',
+                description: '',
+                date: '',
+            })
         }
     }
 
     const handleClose = (event) => {
         event.preventDefault();
         onClose();
-        setTitle('');
-        setDescription('');
-        setDate('');
-        window.history.pushState(null, '', '/');
+        setGlobalStore({
+            title: '',
+            description: '',
+            date: '',
+        });
     };
 
-    useEffect(() => {
-        if (isOpen) {
-            document.addEventListener('keydown', handleKeyDown);
-        } else {
-            document.removeEventListener('keydown', handleKeyDown);
-        }
-        return () => {
-            document.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [isOpen]);
+    const handleRemoveTask = (event) => {
+        event.preventDefault();
+        onRemove(task.id)
+        onClose();
+        setGlobalStore({
+            title: '',
+            description: '',
+            date: '',
+        })
+    }
+
+    const handleCloneTask = () => {
+        onClone(task.id);
+        onClose();
+    }
 
     useEffect(() => {
+        if (mode) {
+            document.addEventListener('keydown', handleKeyDown);
+        } 
         if (mode === 'view') {
+            document.addEventListener('keydown', handleKeyDown);
             document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('keydown', handleKeyDown);
         }
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('keydown', handleKeyDown);
         };
     }, [mode]);
 
     useEffect(() => {
         if (mode === 'edit') {
-            onSave
+            onSave;
         }
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
@@ -123,26 +164,33 @@ export const Modal = ({isOpen, onClose, onEdit, task, mode, onCreate, onSave, on
 
     useEffect(() => {
         if (task) {
-            setTitle(task.title);
-            setDescription(task.description);
-            setDate(task.date);
+            setGlobalStore({
+                title: task.title,
+                description: task.description,
+                date: task.date,
+            })
         }
     }, [task]);
 
-
     const clearFirstFields = () => {
-        setTitle('');
+        setGlobalStore({
+            title: '',
+        })
     }
 
     const clearSecondFields = () => {
-        setDescription('');
+        setGlobalStore({
+            description: '',
+        })
     }
 
     const clearThirdFields = () => {
-        setDate('');
+        setGlobalStore({
+            date: '',
+        })
     }
 
-    if (!isOpen) return null;
+    if (!mode) return null;
 
     return (
         <div className="modalOverlay">
@@ -161,7 +209,7 @@ export const Modal = ({isOpen, onClose, onEdit, task, mode, onCreate, onSave, on
                             <p className="modalRemoveParagraph">Are you sure you want to delete the task "<span className="modalBoldText">{task.title}</span>"?</p>
                         </div>
                         <div className="modalButtons">
-                            <button className="btn modalRemoveButton" onClick={() => onRemove(task.id)}>Remove</button>
+                            <button className="btn modalRemoveButton" onClick={handleRemoveTask}>Remove</button>
                             <button className="btn modalCancelButton" onClick={handleClose}>Cancel</button>
                         </div>
                     </>
@@ -176,7 +224,6 @@ export const Modal = ({isOpen, onClose, onEdit, task, mode, onCreate, onSave, on
                             />
                         </div>
                     </>)}
-
                 {mode === 'view' && (
                     <>
                         <div className="modalModeText">
@@ -184,12 +231,12 @@ export const Modal = ({isOpen, onClose, onEdit, task, mode, onCreate, onSave, on
                             <p className="modalModeText__date">{task.date}</p>
                         </div>
                         <div className="modalButtons">
-                            <button className="btn modalEditfromViewButton" onClick={() => onEdit(task)}>Edit</button>
+                            <Link to={`/edit?id=${task.id}`} className="btn modalEditfromViewButton" onClick={() => onEdit(task)}>Edit</Link>
+                            <button className="btn modalCloneButton" onClick={handleCloneTask}>Copy</button>
                             <button className="btn modalCancelButton" onClick={handleClose}>Cancel</button>
                         </div>
                     </>
                 )}
-
                 {mode === 'edit' && (
                     <>
                         <label>Title
@@ -199,10 +246,10 @@ export const Modal = ({isOpen, onClose, onEdit, task, mode, onCreate, onSave, on
                                     name="title"
                                     className="modalInput"
                                     value={title}
-                                    onChange={(event) => setTitle(event.target.value)}
+                                    onChange={(event) => setGlobalStore({title: event.target.value,})}
                                     placeholder="Enter title"
                                     style={{
-                                        borderColor:  errors.title ? 'var(--danger)' : 'var(--light-grey)',
+                                        borderColor: errors.title ? 'var(--danger)' : 'var(--light-grey)',
                                     }}
                                 />
                                 <FontAwesomeIcon
@@ -220,10 +267,10 @@ export const Modal = ({isOpen, onClose, onEdit, task, mode, onCreate, onSave, on
                                     name="description"
                                     className="modalInput"
                                     value={description}
-                                    onChange={(event) => setDescription(event.target.value)}
+                                    onChange={(event) => setGlobalStore({description: event.target.value,})}
                                     placeholder="Enter description"
                                     style={{
-                                        borderColor:  errors.description ? 'var(--danger)' : 'var(--light-grey)',
+                                        borderColor: errors.description ? 'var(--danger)' : 'var(--light-grey)',
                                     }}
                                 />
                                 <FontAwesomeIcon
@@ -241,10 +288,10 @@ export const Modal = ({isOpen, onClose, onEdit, task, mode, onCreate, onSave, on
                                     name="date"
                                     className="modalInput"
                                     value={date}
-                                    onChange={(event) => setDate(event.target.value)}
+                                    onChange={(event) => setGlobalStore({date: event.target.value,})}
                                     placeholder="DD.MM.YYYY"
                                     style={{
-                                        borderColor:  errors.date ? 'var(--danger)' : 'var(--light-grey)',
+                                        borderColor: errors.date ? 'var(--danger)' : 'var(--light-grey)',
                                     }}
                                 />
                                 <FontAwesomeIcon
@@ -256,12 +303,11 @@ export const Modal = ({isOpen, onClose, onEdit, task, mode, onCreate, onSave, on
                             {errors.date && <span style={{color: 'red'}}>{errors.date}</span>}
                         </label>
                         <div className="modalButtons">
-                            <button className="btn modalEditButton" onClick={validate}>Save</button>
+                            <button className="btn modalEditButton" onClick={handleAction}>Save</button>
                             <button className="btn modalCancelButton" onClick={handleClose}>Cancel</button>
                         </div>
                     </>
                 )}
-
                 {mode === 'create' && (
                     <>
                         <label>Title
@@ -270,10 +316,10 @@ export const Modal = ({isOpen, onClose, onEdit, task, mode, onCreate, onSave, on
                                     type="text"
                                     className="modalInput"
                                     value={title}
-                                    onChange={(event) => setTitle(event.target.value)}
+                                    onChange={(event) => setGlobalStore({title: event.target.value,})}
                                     placeholder="Enter title"
                                     style={{
-                                        borderColor:  errors.title ? 'var(--danger)' : 'var(--light-grey)',
+                                        borderColor: errors.title ? 'var(--danger)' : 'var(--light-grey)',
                                     }}
                                 />
                             </div>
@@ -284,10 +330,10 @@ export const Modal = ({isOpen, onClose, onEdit, task, mode, onCreate, onSave, on
                                 <input
                                     className="modalInput"
                                     value={description}
-                                    onChange={(event) => setDescription(event.target.value)}
+                                    onChange={(event) => setGlobalStore({description: event.target.value,})}
                                     placeholder="Enter description"
                                     style={{
-                                        borderColor:  errors.description ? 'var(--danger)' : 'var(--light-grey)',
+                                        borderColor: errors.description ? 'var(--danger)' : 'var(--light-grey)',
                                     }}
                                 />
                             </div>
@@ -299,17 +345,17 @@ export const Modal = ({isOpen, onClose, onEdit, task, mode, onCreate, onSave, on
                                     type="text"
                                     className="modalInput"
                                     value={date}
-                                    onChange={(event) => setDate(event.target.value)}
+                                    onChange={(event) => setGlobalStore({date: event.target.value,})}
                                     placeholder="DD.MM.YYYY"
                                     style={{
-                                        borderColor:  errors.date ? 'var(--danger)' : 'var(--light-grey)',
+                                        borderColor: errors.date ? 'var(--danger)' : 'var(--light-grey)',
                                     }}
                                 />
                             </div>
                             {errors.date && <span style={{color: 'red'}}>{errors.date}</span>}
                         </label>
                         <div className="modalButtons">
-                            <button className="btn modalCreateButton" onClick={validate}>Create</button>
+                            <button className="btn modalCreateButton" onClick={handleAction}>Create</button>
                             <button className="btn modalCancelButton" onClick={handleClose}>Cancel</button>
                         </div>
                     </>
