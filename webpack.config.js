@@ -9,14 +9,14 @@ module.exports = (_, {mode}) => {
         mode: 'development',
         entry: './src/App.jsx',
         output: {
-            filename: '[fullhash].js',
+            // filename: '[fullhash].js',
             path: path.resolve(__dirname, 'build'),
             clean: true,
         },
         optimization: {
-            splitChunks: {
-                chunks: 'all',
-            },
+            // splitChunks: {
+            //     chunks: 'all',
+            // },
             minimizer: [new CssMinimizerPlugin(), new HtmlMinimizerPlugin()],
         },
         devServer: {
