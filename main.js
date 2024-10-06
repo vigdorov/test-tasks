@@ -7324,34 +7324,34 @@ try {
   // no-op
 }
 function createBrowserRouter(routes, opts) {
-  return router_createRouter({
+  return createRouter({
     basename: opts == null ? void 0 : opts.basename,
     future: react_router_dom_dist_extends({}, opts == null ? void 0 : opts.future, {
       v7_prependBasename: true
     }),
-    history: router_createBrowserHistory({
+    history: createBrowserHistory({
       window: opts == null ? void 0 : opts.window
     }),
     hydrationData: (opts == null ? void 0 : opts.hydrationData) || parseHydrationData(),
     routes,
-    mapRouteProperties: mapRouteProperties,
+    mapRouteProperties: UNSAFE_mapRouteProperties,
     unstable_dataStrategy: opts == null ? void 0 : opts.unstable_dataStrategy,
     unstable_patchRoutesOnNavigation: opts == null ? void 0 : opts.unstable_patchRoutesOnNavigation,
     window: opts == null ? void 0 : opts.window
   }).initialize();
 }
 function createHashRouter(routes, opts) {
-  return createRouter({
+  return router_createRouter({
     basename: opts == null ? void 0 : opts.basename,
     future: react_router_dom_dist_extends({}, opts == null ? void 0 : opts.future, {
       v7_prependBasename: true
     }),
-    history: createHashHistory({
+    history: router_createHashHistory({
       window: opts == null ? void 0 : opts.window
     }),
     hydrationData: (opts == null ? void 0 : opts.hydrationData) || parseHydrationData(),
     routes,
-    mapRouteProperties: UNSAFE_mapRouteProperties,
+    mapRouteProperties: mapRouteProperties,
     unstable_dataStrategy: opts == null ? void 0 : opts.unstable_dataStrategy,
     unstable_patchRoutesOnNavigation: opts == null ? void 0 : opts.unstable_patchRoutesOnNavigation,
     window: opts == null ? void 0 : opts.window
@@ -22198,7 +22198,7 @@ const TaskBoard = () => {
 
 
 
-const router = createBrowserRouter([{
+const router = createHashRouter([{
   path: "/:mode?",
   element: /*#__PURE__*/react.createElement(TaskBoard, null),
   errorElement: /*#__PURE__*/react.createElement(ErrorPage, null)
