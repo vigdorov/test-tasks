@@ -8541,7 +8541,21 @@ const GlobalStoreController = _ref => {
   } = _ref;
   const [state, setState] = (0,react.useState)({
     tasks: tasks,
-    isDirty: false,
+    form: {
+      state: {
+        isDirty: false,
+        errors: {
+          title: '',
+          description: '',
+          date: ''
+        }
+      },
+      data: {
+        title: '',
+        description: '',
+        date: ''
+      }
+    },
     currentTaskId: null,
     id: Date.now(),
     title: '',
@@ -21868,7 +21882,14 @@ const Modal = _ref => {
       date: ''
     });
   };
-  if (!mode) return null;
+  if (!mode) {
+    console.error('mode is not defined');
+    return null;
+  }
+  if (['create', 'edit'].every(m => m !== mode)) {
+    console.error(`mode "${mode}" is not supported`);
+    return null;
+  }
   return /*#__PURE__*/react.createElement("div", {
     className: "modalOverlay"
   }, /*#__PURE__*/react.createElement("div", {
