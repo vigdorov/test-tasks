@@ -12,7 +12,7 @@ module.exports = (_, {mode}) => {
             filename: '[chunkhash].js',
             path: path.resolve(__dirname, 'build'),
             clean: true,
-            publicPath: mode === 'production' ? undefined : '/',
+            publicPath: mode === 'production' ? '/test-tasks' : '/',
         },
         optimization: {
             splitChunks: {
