@@ -22,6 +22,7 @@ export const TaskBoard = () => {
     const {tasks, currentTaskId} = state;
 
     const {mode} = useParams();
+
     const navigate = useNavigate();
 
     const closeModal = () => {

@@ -8,9 +8,27 @@ const tasks = storedTasks ? JSON.parse(storedTasks) : [];
 export const GlobalStoreController = ({children}) => {
     const [state, setState] = useState({
         tasks: tasks,
-        isDirty: false,
+
+        form: {
+            state: {
+                isDirty: false,
+
+                errors: {
+                    title: '',
+                    description: '',
+                    date: ''
+                },
+            },
+            data: {
+                title: '',
+                description: '',
+                date: '',
+            },
+        },
+        
         currentTaskId: null,
         id: Date.now(),
+        
         title: '',
         description: '',
         date: '',

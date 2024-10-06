@@ -190,7 +190,15 @@ export const Modal = ({onClose, onEdit, task, mode, onCreate, onSave, onRemove, 
         })
     }
 
-    if (!mode) return null;
+    if (!mode) {
+        console.error('mode is not defined');
+        return null;
+    }
+
+    if (['create', 'edit'].every(m => m !== mode)) {
+        console.error(`mode "${mode}" is not supported`);
+        return null;
+    }
 
     return (
         <div className="modalOverlay">
