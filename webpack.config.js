@@ -9,10 +9,9 @@ module.exports = (_, {mode}) => {
         mode: 'development',
         entry: './src/App.jsx',
         output: {
-            filename: '[chunkhash].js',
+            filename: '[fullhash].js',
             path: path.resolve(__dirname, 'build'),
             clean: true,
-            publicPath: mode === 'production' ? '/test-tasks' : '/',
         },
         optimization: {
             splitChunks: {
